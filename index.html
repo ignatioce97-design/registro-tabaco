@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Campo — Tabaco 2026</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2E5339">
+<style>
+  :root{
+    --green:#2E5339;
+    --green-dark:#1F3A27;
+    --green-pale:#E9EFE7;
+    --gold:#C9A35D;
+    --gold-pale:#F6EFE0;
+    --cream:#FBF8F2;
+    --ink:#2A2A28;
+    --muted:#7A7670;
+    --line:#E2DCCB;
+    --red:#A8442F;
+    --blue:#2D5F7C;
+    --white:#FFFFFF;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .header-wrap{ position:sticky; top:0; z-index:40; box-shadow:0 2px 10px rgba(0,0,0,.15); }
+  .topbar{ background:linear-gradient(135deg,var(--green) 0%, var(--green-dark) 100%); color:white; padding:12px 16px 10px; }
+  .topbar-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .topbar h1{ margin:0; font-size:1.1rem; font-weight:700; letter-spacing:.2px; display:flex; align-items:center; gap:7px; flex:0 1 auto; min-width:0; white-space:nowrap;}
+  .topbar .sub{font-size:.72rem; color:var(--gold-pale); opacity:.85; margin-top:3px;}
+  .meta-toggle{
+    background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); color:white;
+    border-radius:20px; padding:6px 12px; font-size:.74rem; font-weight:600; cursor:pointer;
+    white-space:nowrap; flex:0 0 auto;
+  }
+  .lote-active-select{
+    flex:1 1 160px; min-width:120px; max-width:260px;
+    background:rgba(255,255,255,.95); border:1px solid rgba(255,255,255,.4); border-radius:20px;
+    padding:6px 10px; font-size:.78rem; font-weight:700; color:var(--green-dark);
+  }
+  .status-pill{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:.7rem; background:rgba(255,255,255,.12); border-radius:20px;
+    padding:3px 10px; transition:opacity .4s; flex:0 0 auto;
+  }
+  .status-pill.saved{background:rgba(255,255,255,.22);}
+  .dot{width:6px;height:6px;border-radius:50%;background:#9BD9A8;}
+
+  .meta-bar{ background:var(--green-dark); padding:10px 14px 14px; border-top:1px solid rgba(255,255,255,.12); }
+  .meta-bar.collapsed{display:none;}
+  .meta-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; max-width:1100px; margin:0 auto; }
+  .meta-grid label{display:block; font-size:.66rem; color:var(--gold-pale); margin-bottom:2px; text-transform:uppercase; letter-spacing:.4px;}
+  .meta-grid input{ width:100%; padding:7px 8px; border-radius:7px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.92); font-size:.85rem; }
+
+  .tabs{ display:flex; overflow-x:auto; gap:6px; padding:10px 14px; background:var(--gold-pale); border-bottom:2px solid var(--gold); scrollbar-width:thin; }
+  .tabs::-webkit-scrollbar{height:5px;}
+  .tabs::-webkit-scrollbar-thumb{background:var(--gold); border-radius:5px;}
+  .tab-btn{
+    flex:0 0 auto; white-space:nowrap; cursor:pointer;
+    border:1px solid var(--gold); background:var(--white); color:var(--green-dark);
+    padding:8px 14px; border-radius:20px; font-size:.82rem; font-weight:600; transition:.15s;
+  }
+  .tab-btn.active{background:var(--green); color:white; border-color:var(--green);}
+  .tab-btn:active{transform:scale(.97);}
+
+  main{max-width:1100px; margin:0 auto; padding:16px 14px 40px;}
+  .section{display:none;}
+  .section.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .intro{ background:var(--green-pale); border-left:4px solid var(--gold); padding:10px 14px; border-radius:8px; font-size:.84rem; color:var(--green-dark); margin-bottom:18px; line-height:1.45; }
+  .warn-box{ background:#FBEFE9; border-left:4px solid var(--red); padding:12px 14px; border-radius:8px; font-size:.86rem; color:#7A2E1B; margin-bottom:18px; line-height:1.5; }
+
+  h2.block-title{ font-size:1.05rem; color:var(--green-dark); margin:26px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
+  h2.block-title:first-child{margin-top:0;}
+  h3.sub-title{font-size:.92rem; color:#9C7A33; margin:18px 0 8px; font-weight:700;}
+
+  .card{ background:var(--white); border:1px solid var(--line); border-radius:var(--radius); padding:14px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+  .form-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+  .field label{ display:block; font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.3px; margin-bottom:4px; }
+  .field input, .field select{ width:100%; padding:9px 9px; border:1.5px solid var(--line); border-radius:7px; font-size:.9rem; background:var(--white); color:var(--ink); }
+  .field input:focus, .field select:focus{outline:2px solid var(--gold); border-color:var(--gold);}
+  .field.required label::after{content:" *"; color:var(--red);}
+
+  .btn{ border:none; cursor:pointer; font-weight:700; border-radius:8px; padding:10px 18px; font-size:.86rem; transition:.15s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-primary{background:var(--green); color:white;}
+  .btn-primary:hover{background:var(--green-dark);}
+  .btn-primary:disabled{background:#B7BBB2; cursor:not-allowed;}
+  .btn-danger{background:var(--red); color:white;}
+  .btn-ghost{background:transparent; color:var(--red); border:1px solid var(--red); padding:5px 9px; font-size:.78rem;}
+  .btn-row{margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .form-msg{font-size:.78rem; color:var(--red); margin-left:4px;}
+
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:white;}
+  table{width:100%; border-collapse:collapse; font-size:.82rem; min-width:560px;}
+  thead th{ background:var(--gold); color:white; padding:9px 8px; text-align:center; font-size:.72rem; text-transform:uppercase; letter-spacing:.2px; white-space:nowrap; }
+  tbody td{padding:8px; text-align:center; border-bottom:1px solid var(--line); white-space:nowrap;}
+  tbody tr:nth-child(even){background:#FAF9F5;}
+  tbody tr:hover{background:var(--green-pale);}
+  tfoot td{padding:9px 8px; background:var(--gold-pale); font-weight:700; text-align:center; border-top:2px solid var(--gold);}
+  .empty-row td{color:var(--muted); font-style:italic; padding:18px;}
+  .del-btn{ background:none; border:none; color:var(--red); cursor:pointer; font-size:1rem; line-height:1; padding:2px 6px; border-radius:5px; }
+  .del-btn:hover{background:#FBE4DC;}
+
+  .checklist-table td.ref{background:var(--gold-pale);}
+  .checklist-table input{width:100%; min-width:90px; padding:5px; border:1px solid var(--line); border-radius:5px; font-size:.78rem;}
+
+  .summary-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:18px;}
+  .stat-card{background:white; border:1px solid var(--line); border-left:4px solid var(--green); border-radius:8px; padding:12px;}
+  .stat-card.cost{border-left-color:var(--blue);}
+  .stat-card .num{font-size:1.4rem; font-weight:800; color:var(--green-dark);}
+  .stat-card .lbl{font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.3px;}
+
+  .lote-card{ background:white; border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .lote-card.active{border:2px solid var(--green); background:var(--green-pale);}
+  .lote-card .info b{color:var(--green-dark); font-size:.95rem;}
+  .lote-card .info .meta{font-size:.78rem; color:var(--muted); margin-top:2px;}
+  .lote-actions{display:flex; gap:6px; flex-wrap:wrap;}
+  .lote-actions button{font-size:.74rem; padding:6px 10px;}
+  .badge-active{background:var(--green); color:white; font-size:.66rem; padding:2px 8px; border-radius:10px; font-weight:700; margin-left:8px;}
+
+  .unit-hint{font-size:.68rem; color:var(--muted); margin-top:3px; display:block;}
+
+  .footer-note{text-align:center; color:var(--muted); font-size:.74rem; margin-top:30px; line-height:1.6;}
+  .backup-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+  input[type=file]{display:none;}
+  .label-file{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--green); color:var(--green-dark); padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:.86rem;}
+
+  @media (max-width:700px){
+    .topbar h1{font-size:1rem;}
+    .meta-toggle{font-size:.7rem; padding:5px 10px;}
+    .lote-active-select{font-size:.74rem;}
+
+    .table-wrap{overflow-x:visible; border:none; background:transparent;}
+    table.responsive-table{min-width:0; width:100%;}
+    table.responsive-table thead{display:none;}
+    table.responsive-table, table.responsive-table tbody, table.responsive-table tfoot,
+    table.responsive-table tr, table.responsive-table td{display:block; width:100%;}
+    table.responsive-table tbody tr, table.responsive-table tfoot tr{
+      background:white; border:1px solid var(--line); border-radius:10px;
+      padding:4px 12px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,.05);
+    }
+    table.responsive-table tbody tr::before, table.responsive-table tfoot tr::before{
+      content:attr(data-card-title); display:block; font-weight:800; color:var(--green-dark);
+      font-size:.78rem; padding:9px 0 7px; border-bottom:2px solid var(--gold-pale); margin-bottom:2px;
+    }
+    table.responsive-table tbody tr.empty-row::before{content:none;}
+    table.responsive-table tbody td, table.responsive-table tfoot td{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      text-align:right; padding:8px 0; border-bottom:1px solid #F0EDE4; white-space:normal;
+    }
+    table.responsive-table tbody td:last-child, table.responsive-table tfoot td:last-child{border-bottom:none;}
+    table.responsive-table tbody td[data-label]:not([data-label=""])::before,
+    table.responsive-table tfoot td[data-label]:not([data-label=""])::before{
+      content:attr(data-label); font-weight:700; color:var(--muted); font-size:.7rem;
+      text-transform:uppercase; letter-spacing:.2px; text-align:left; flex:0 0 auto; padding-right:8px;
+    }
+    table.responsive-table tbody td.ref{background:none; font-weight:600;}
+    table.responsive-table tbody td input{text-align:right; max-width:62%; margin-left:auto;}
+    table.responsive-table td:empty{display:none;}
+    table.responsive-table .action-cell{justify-content:flex-end; padding-top:10px;}
+    table.responsive-table .action-cell .del-btn{border:1px solid var(--red); border-radius:7px; padding:7px 12px; font-size:.78rem;}
+    table.responsive-table .empty-row{background:transparent !important; border:1px dashed var(--line) !important; box-shadow:none;}
+    table.responsive-table .empty-row td{display:block; text-align:center; padding:16px 4px;}
+    table.responsive-table tfoot tr{background:var(--gold-pale); border:2px solid var(--gold);}
+    table.responsive-table tfoot tr::before{border-bottom-color:var(--gold);}
+    table.responsive-table tfoot td{border-bottom:1px dashed #E7D6AE;}
+    table.responsive-table tfoot td:last-child{display:none;}
+    table.responsive-table .total-label-cell{display:none;}
+
+    .form-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:420px){ .form-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="header-wrap">
+  <div class="topbar">
+    <div class="topbar-row">
+      <h1>🌿 Registro</h1>
+      <select class="lote-active-select" id="loteActiveSelect" onchange="switchLote(this.value)">
+        <option value="">— Sin lotes —</option>
+      </select>
+      <span class="status-pill" id="statusPill"><span class="dot"></span><span id="statusText">listo</span></span>
+      <button class="meta-toggle" id="metaToggleBtn" onclick="toggleMeta()">▾ Datos generales</button>
+    </div>
+    <div class="sub" id="metaSummary">Cosecha 2026</div>
+  </div>
+  <div class="meta-bar collapsed" id="metaBar">
+    <div class="meta-grid">
+      <div><label>Hacienda / Empresa</label><input id="meta_hacienda" placeholder="Ej. Hacienda San José"></div>
+      <div><label>Técnico responsable</label><input id="meta_tecnico" placeholder="Nombre"></div>
+      <div><label>Costo de jornal ($)</label><input id="meta_costoJornal" type="number" min="0" step="0.01" placeholder="0.00"></div>
+    </div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<main id="main"></main>
+
+<div class="footer-note">
+  Registro de Campo — Tabaco · Cosecha 2026<br>
+  Toda la información se guarda automáticamente en este dispositivo, por lote. Use la pestaña <b>Respaldo</b> para descargar una copia de seguridad o el libro de Excel.
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ============================================================
+   UTILIDADES
+============================================================ */
+function esc(s){
+  if(s===undefined||s===null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function uid(){ return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function num(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
+function fmt(v, dec){
+  if(v===''||v===undefined||v===null) return '';
+  const n = num(v);
+  if(dec===undefined) return n % 1 === 0 ? String(n) : n.toFixed(2);
+  return n.toFixed(dec);
+}
+function money(v){
+  const n = num(v);
+  return '$'+n.toLocaleString('es-EC',{minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function daysBetween(a,b){
+  if(!a||!b) return '';
+  const d1=new Date(a), d2=new Date(b);
+  if(isNaN(d1)||isNaN(d2)) return '';
+  return Math.round((d2-d1)/86400000);
+}
+let saveTimer=null;
+function flashStatus(text, ok){
+  const pill=document.getElementById('statusPill');
+  const t=document.getElementById('statusText');
+  t.textContent=text;
+  pill.classList.toggle('saved', !!ok);
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{ t.textContent='listo'; pill.classList.remove('saved'); }, 1800);
+}
+async function storageSet(key, value){
+  try{
+    await window.storage.set(key, JSON.stringify(value), false);
+    flashStatus('Guardado ✓', true);
+  }catch(e){
+    console.error('storage error', e);
+    flashStatus('Error al guardar', false);
+  }
+}
+async function storageGet(key, fallback){
+  try{
+    const res = await window.storage.get(key, false);
+    if(res && res.value !== undefined) return JSON.parse(res.value);
+    return fallback;
+  }catch(e){
+    return fallback;
+  }
+}
+
+/* ============================================================
+   LOTES (multi-lote)
+============================================================ */
+function activeLote(){
+  return (state.lotes||[]).find(l=>l.id===state.activeLoteId) || null;
+}
+function activeSuperficie(){
+  const l = activeLote();
+  return l ? num(l.superficie) : 0;
+}
+function keyFor(tableKey){
+  return `${tableKey}__${state.activeLoteId}`;
+}
+function keyForLote(tableKey, loteId){
+  return `${tableKey}__${loteId}`;
+}
+
+async function addLote(nombre, variedad, superficie, fechaSiembra){
+  const lote = {id:uid(), nombre, variedad, superficie, fechaSiembra};
+  state.lotes = state.lotes||[];
+  state.lotes.push(lote);
+  await storageSet('lotes', state.lotes);
+  if(!state.activeLoteId){
+    state.activeLoteId = lote.id;
+    await storageSet('activeLoteId', lote.id);
+    await loadActiveLoteData();
+  }
+  return lote;
+}
+async function deleteLote(id){
+  if(!confirm('¿Eliminar este lote? Sus registros guardados quedarán huérfanos (no se borran, pero no se mostrarán hasta crear un lote nuevo).')) return;
+  state.lotes = (state.lotes||[]).filter(l=>l.id!==id);
+  await storageSet('lotes', state.lotes);
+  if(state.activeLoteId===id){
+    state.activeLoteId = state.lotes.length ? state.lotes[0].id : '';
+    await storageSet('activeLoteId', state.activeLoteId);
+    await loadActiveLoteData();
+  }
+  renderLoteSelect();
+  renderActiveSection();
+}
+async function switchLote(id){
+  state.activeLoteId = id;
+  await storageSet('activeLoteId', id);
+  await loadActiveLoteData();
+  renderLoteSelect();
+  renderActiveSection();
+}
+function renderLoteSelect(){
+  const sel = document.getElementById('loteActiveSelect');
+  const lotes = state.lotes||[];
+  if(lotes.length===0){
+    sel.innerHTML = `<option value="">— Sin lotes —</option>`;
+    return;
+  }
+  sel.innerHTML = lotes.map(l=>`<option value="${l.id}" ${l.id===state.activeLoteId?'selected':''}>📍 ${esc(l.nombre)}</option>`).join('');
+}
+
+/* ============================================================
+   ESTADO
+============================================================ */
+const VIVERO_RECOM = [
+  {dds:'0',   producto:'RIVAL®',        ingrediente:'Propamocarb',                dosis:'2 cc/l',   forma:'Aplicar en turba',                vol:'6L/260 band.'},
+  {dds:'05/07',producto:'ORTHOCIDE',    ingrediente:'Captan',                     dosis:'1.5 gm/l', forma:'1 día después de descubrir',      vol:'6L/260 band.'},
+  {dds:'9',   producto:'LANNATE 40 SP', ingrediente:'Methomyl',                   dosis:'1 gm/l',   forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'16',  producto:'ANTRACOL',      ingrediente:'Propineb',                   dosis:'2 gm/l',   forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'20',  producto:'CONFIDOR 350',  ingrediente:'Imidacloprid',               dosis:'1.5 cc/l', forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'23',  producto:'ANTRACOL',      ingrediente:'Propineb',                   dosis:'1.5 cc/l', forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'27',  producto:'AGRILAC PLUS',  ingrediente:'Lacto reemplazante',         dosis:'10 gm/l',  forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'29',  producto:'TRACER 20 SC',  ingrediente:'Spinosad',                   dosis:'1 cc/l',   forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'31',  producto:'ANTRACOL',      ingrediente:'Propineb',                   dosis:'2 gm/l',   forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'34',  producto:'COBRE NORDOX',  ingrediente:'Óxido cuproso',              dosis:'1.5 cc/l', forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'36',  producto:'SOLARIS',       ingrediente:'Spinetoram',                 dosis:'1 gm/l',   forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'39',  producto:'ALIETTE',       ingrediente:'Fosetil aluminio',           dosis:'2 cc/l',   forma:'Después de riego',                vol:'6L/260 band.'},
+  {dds:'42',  producto:'MAXIM® XL',     ingrediente:'Fludioxonil + Metalaxyl',    dosis:'2.5 cc/l', forma:'Regar',                           vol:'6L/260 band.'},
+  {dds:'42',  producto:'VOLIAM FLEX',   ingrediente:'Thiamethoxam + Chlorantraniliprole', dosis:'2 cc/l', forma:'Sumergir',                  vol:'400 lts'},
+];
+
+const OPTS = {
+  implemento: ["Arado de discos","Rastra","Subsolador","Rotavator","Surcador","Cincel","Otro (ver observaciones)"],
+  actividad: ["Aporque","Desyeme / Deschupone","Despunte","Control de malezas","Resiembra","Aplicación fitosanitaria","Fertilización","Riego","Revisión de plagas","Otro (ver observaciones)"],
+  causaResiembra: ["Daño mecánico","Plántula débil","Ataque de plagas","Encharcamiento / exceso de agua","Sequía","Enfermedad","Otro (ver observaciones)"],
+  tipoFito: ["Sólido","Líquido"],
+  productoNutriAlt: ["15-00-00 Ultrasol Calcium","18-06-18 Ultrasol Desarrollo"],
+  unidadInv: ["kg","L","g","mL"],
+};
+
+function defaultState(){
+  return {
+    meta:{hacienda:'',tecnico:'',costoJornal:''},
+    lotes:[], activeLoteId:'',
+    vivRegistro: VIVERO_RECOM.map(()=>({fechaReal:'',cantProd:'',cantCalda:'',obs:''})),
+    vivExtra:[], vivPoda:{1:{fecha:'',obs:''},2:{fecha:'',obs:''},3:{fecha:'',obs:''},4:{fecha:'',obs:''}}, vivElim:'',
+    nutriAlt:[], nutriSem:[],
+    suelo:[],
+    trasplante:[], resiembra:[], erradicacion:[],
+    fert:[],
+    fitoAsp:[], fitoDre:[], fitoInv:[],
+    riego:[],
+    cronograma:[], actExtra:[],
+    cosida:[], peso:[], pases:[],
+  };
+}
+let state = defaultState();
+
+/* claves de datos que viven DENTRO de un lote (namespaced) */
+const LOTE_KEYS = ['vivRegistro','vivExtra','vivPoda','vivElim','nutriAlt','nutriSem',
+  'suelo','trasplante','resiembra','erradicacion','fert','fitoAsp','fitoDre','fitoInv',
+  'riego','cronograma','actExtra','cosida','peso','pases'];
+/* claves globales (no dependen del lote) */
+const GLOBAL_KEYS = ['meta','lotes','activeLoteId'];
+
+/* ============================================================
+   ESQUEMAS DE TABLAS DINÁMICAS GENÉRICAS
+============================================================ */
+function doseFields(extra){
+  return [
+    {key:'tipo', label:'Tipo', type:'select', options:OPTS.tipoFito, required:true},
+    {key:'dosisHa', label:'Dosis / ha (kg si Sólido, L si Líquido)', type:'number', min:0, step:0.01},
+    {key:'volAgua', label:'Agua de mezcla (L)', type:'number', min:0, step:1},
+  ];
+}
+function doseComputed(){
+  return [
+    {key:'dosisTotal', label:'Dosis total', fn:r=>num(r.dosisHa)*activeSuperficie()},
+    {key:'concentracion', label:'Concentración', raw:true, fn:r=>{
+        const vol = num(r.volAgua);
+        if(!vol) return '';
+        const total = num(r.dosisHa)*activeSuperficie();
+        const val = (total*1000)/vol;
+        const unit = r.tipo==='Líquido' ? 'mL/L' : 'g/L';
+        return val.toFixed(2)+' '+unit;
+      }},
+    {key:'costoManoObra', label:'Costo mano de obra ($)', fn:r=>(num(r.canguro)+num(r.bombaManual)+num(r.bombaMotorizada)+num(r.personal))*num(state.meta.costoJornal)},
+  ];
+}
+
+const TABLES = {
+  suelo:{
+    fields:[
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'implemento', label:'Implemento', type:'select', options:OPTS.implemento, required:true},
+      {key:'pases', label:'N° pases', type:'number', min:0, step:1},
+      {key:'profundidad', label:'Profundidad (cm)', type:'number', min:0, step:1},
+      {key:'personal', label:'Personal (jornales)', type:'number', min:0, step:1},
+      {key:'maquinaria', label:'Maquinaria', type:'text'},
+      {key:'costoOperacion', label:'Costo de la operación ($)', type:'number', min:0, step:0.01},
+    ],
+    totals:['personal','costoOperacion']
+  },
+  trasplante:{
+    fields:[
+      {key:'etapa', label:'Etapa', type:'text', required:true},
+      {key:'area', label:'Área de etapa', type:'text'},
+      {key:'superficie', label:'Superficie plantada (ha)', type:'number', min:0, step:0.01},
+      {key:'fecha', label:'Fecha de trasplante', type:'date', required:true},
+      {key:'cuadro', label:'Cuadro de siembra', type:'text', placeholder:'ej. 0.9m x 0.5m'},
+      {key:'totalPlantas', label:'Total de plantas', type:'number', min:0, step:1},
+    ],
+    totals:['superficie','totalPlantas']
+  },
+  resiembra:{
+    fields:[
+      {key:'causa', label:'Causa', type:'select', options:OPTS.causaResiembra, required:true},
+      {key:'sem1', label:'N° plantas sem. 1', type:'number', min:0, step:1},
+      {key:'sem2', label:'N° plantas sem. 2', type:'number', min:0, step:1},
+      {key:'sem3', label:'N° plantas sem. 3', type:'number', min:0, step:1},
+      {key:'sem4', label:'N° plantas sem. 4', type:'number', min:0, step:1},
+    ],
+    computed:[{key:'total', label:'Total', fn:r=>num(r.sem1)+num(r.sem2)+num(r.sem3)+num(r.sem4)}],
+    totals:['sem1','sem2','sem3','sem4'], totalsComputed:['total']
+  },
+  erradicacion:{
+    fields:[
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'fitotoxicidad', label:'Fitotoxicidad', type:'number', min:0, step:1},
+      {key:'canela', label:'Canela Negra', type:'number', min:0, step:1},
+      {key:'marchitamiento', label:'Marchitamiento', type:'number', min:0, step:1},
+      {key:'erwinia', label:'Erwinia', type:'number', min:0, step:1},
+      {key:'mosaico', label:'Mosaico (TMV)', type:'number', min:0, step:1},
+      {key:'virus', label:'Virus', type:'number', min:0, step:1},
+      {key:'llama', label:'Llama la atención', type:'number', min:0, step:1},
+      {key:'lagarta', label:'Lagarta', type:'number', min:0, step:1},
+      {key:'nematodos', label:'Nematodos', type:'number', min:0, step:1},
+      {key:'otro', label:'Otro', type:'number', min:0, step:1},
+    ],
+    computed:[{key:'total', label:'Total', fn:r=>['fitotoxicidad','canela','marchitamiento','erwinia','mosaico','virus','llama','lagarta','nematodos','otro'].reduce((s,k)=>s+num(r[k]),0)}],
+    totals:['fitotoxicidad','canela','marchitamiento','erwinia','mosaico','virus','llama','lagarta','nematodos','otro'], totalsComputed:['total']
+  },
+  fert:{
+    fields:[
+      {key:'dia', label:'Día', type:'number', min:0, step:1},
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'producto', label:'Producto', type:'text', required:true},
+      ...doseFields(),
+      {key:'canguro', label:'Canguro (jornadas)', type:'number', min:0, step:1},
+      {key:'bombaManual', label:'Bomba manual', type:'number', min:0, step:1},
+      {key:'bombaMotorizada', label:'Bomba motorizada', type:'number', min:0, step:1},
+      {key:'personal', label:'Personal', type:'number', min:0, step:1},
+      {key:'costoInsumo', label:'Costo insumo ($)', type:'number', min:0, step:0.01},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ],
+    computed: doseComputed(),
+    totals:['canguro','bombaManual','bombaMotorizada','personal','costoInsumo'], totalsComputed:['dosisTotal','costoManoObra']
+  },
+  fitoAsp: fitoSchema(), fitoDre: fitoSchema(),
+  fitoInv:{
+    fields:[
+      {key:'producto', label:'Producto', type:'text', required:true},
+      {key:'ingrediente', label:'Ingrediente activo', type:'text'},
+      {key:'cantidad', label:'Cantidad en stock', type:'number', min:0, step:0.01},
+      {key:'unidad', label:'Unidad', type:'select', options:OPTS.unidadInv},
+      {key:'fechaVerif', label:'Fecha de verificación', type:'date'},
+      {key:'costoInsumo', label:'Costo total ($)', type:'number', min:0, step:0.01},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ],
+    totals:['costoInsumo']
+  },
+  riego:{
+    fields:[
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'tiempo', label:'Tiempo (min)', type:'number', min:0, step:1},
+      {key:'llaves', label:'Llaves abiertas', type:'number', min:0, step:1},
+      {key:'emisorIni', label:'Emisor inicial (L)', type:'number', min:0, step:0.01},
+      {key:'emisorCen', label:'Emisor central (L)', type:'number', min:0, step:0.01},
+      {key:'emisorFin', label:'Emisor final (L)', type:'number', min:0, step:0.01},
+    ],
+    computed:[{key:'total', label:'Total (L)', fn:r=>num(r.emisorIni)+num(r.emisorCen)+num(r.emisorFin)}],
+    totalsComputed:['total'], avgComputed:['total']
+  },
+  cronograma:{
+    fields:[
+      {key:'dia', label:'Día', type:'number', min:0, step:1},
+      {key:'actividad', label:'Actividad', type:'select', options:OPTS.actividad, required:true},
+      {key:'fechaProg', label:'Fecha programada', type:'date'},
+      {key:'fechaEjec', label:'Fecha de ejecución', type:'date'},
+      {key:'jornales', label:'Cantidad de jornales', type:'number', min:0, step:1},
+      {key:'obs', label:'Observación', type:'text'},
+    ],
+    computed:[{key:'dias', label:'Días transcurridos', fn:r=>daysBetween(r.fechaProg,r.fechaEjec)}],
+    totals:['jornales']
+  },
+  actExtra:{
+    fields:[
+      {key:'actividad', label:'Actividad', type:'text', required:true},
+      {key:'fechaEjec', label:'Fecha de ejecución', type:'date'},
+      {key:'jornales', label:'Jornales', type:'number', min:0, step:1},
+      {key:'detalles', label:'Detalles', type:'text'},
+    ],
+    totals:['jornales']
+  },
+  cosida:{
+    fields:[
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'hojasCuje', label:'Hojas / cuje', type:'number', min:0, step:1},
+      {key:'cujes', label:'Cujes', type:'number', min:0, step:1},
+      {key:'jornales', label:'Jornales', type:'number', min:0, step:1},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ],
+    totals:['cujes','jornales']
+  },
+  peso:{
+    fields:[
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'cujes', label:'Cujes', type:'number', min:0, step:1},
+      {key:'jornales', label:'Jornales', type:'number', min:0, step:1},
+      {key:'libras', label:'Libras', type:'number', min:0, step:0.1},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ],
+    totals:['cujes','jornales','libras']
+  },
+  pases:{
+    fields:[
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'numero', label:'N° de pase', type:'number', min:1, step:1},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ]
+  },
+  vivExtra:{
+    fields:[
+      {key:'producto', label:'Producto / dosis', type:'text', required:true},
+      {key:'forma', label:'Forma de aplicación', type:'text'},
+      {key:'fecha', label:'Fecha', type:'date'},
+      {key:'cantUtil', label:'Cant. utilizada', type:'number', min:0, step:0.01},
+      {key:'cantCalda', label:'Cant. calda', type:'number', min:0, step:0.01},
+      {key:'costoInsumo', label:'Costo insumo ($)', type:'number', min:0, step:0.01},
+      {key:'autorizo', label:'Autorizado por', type:'text'},
+      {key:'motivo', label:'Motivo', type:'text'},
+    ],
+    totals:['costoInsumo']
+  },
+  nutriAlt:{
+    fields:[
+      {key:'dia', label:'Día', type:'number', min:0, step:1},
+      {key:'producto', label:'Producto', type:'select', options:OPTS.productoNutriAlt, required:true},
+      {key:'dosis', label:'Dosis (g/L)', type:'number', min:0, step:0.1, placeholder:'1.3'},
+      {key:'fecha', label:'Fecha', type:'date'},
+      {key:'total', label:'Total aplicado (g)', type:'number', min:0, step:0.1},
+      {key:'costoInsumo', label:'Costo insumo ($)', type:'number', min:0, step:0.01},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ],
+    totals:['total','costoInsumo']
+  },
+  nutriSem:{
+    fields:[
+      {key:'semana', label:'Semana', type:'number', min:1, step:1},
+      {key:'dosis', label:'Dosis Sulfato de Magnesio (g/L)', type:'number', min:0, step:0.1, placeholder:'1'},
+      {key:'fecha', label:'Fecha', type:'date'},
+      {key:'total', label:'Total aplicado (g)', type:'number', min:0, step:0.1},
+      {key:'costoInsumo', label:'Costo insumo ($)', type:'number', min:0, step:0.01},
+      {key:'obs', label:'Observaciones', type:'text'},
+    ],
+    totals:['total','costoInsumo']
+  },
+};
+function fitoSchema(){
+  return {
+    fields:[
+      {key:'semana', label:'Semana N°', type:'number', min:0, step:1},
+      {key:'fecha', label:'Fecha', type:'date', required:true},
+      {key:'producto', label:'Producto', type:'text', required:true},
+      {key:'ingrediente', label:'Ingrediente activo', type:'text'},
+      ...doseFields(),
+      {key:'canguro', label:'Canguro', type:'number', min:0, step:1},
+      {key:'bombaManual', label:'Bomba manual', type:'number', min:0, step:1},
+      {key:'bombaMotorizada', label:'Bomba motorizada', type:'number', min:0, step:1},
+      {key:'personal', label:'Personal', type:'number', min:0, step:1},
+      {key:'costoInsumo', label:'Costo insumo ($)', type:'number', min:0, step:0.01},
+      {key:'obs', label:'Observación', type:'text'},
+    ],
+    computed: doseComputed(),
+    totals:['canguro','bombaManual','bombaMotorizada','personal','costoInsumo'], totalsComputed:['dosisTotal','costoManoObra']
+  };
+}
+
+/* ============================================================
+   RENDER GENÉRICO: formulario + tabla para tablas dinámicas
+============================================================ */
+function fieldInput(tableKey, f, value){
+  const id = `inp_${tableKey}_${f.key}`;
+  const v = value===undefined||value===null? '': value;
+  if(f.type==='select'){
+    const opts = f.options.map(o=>`<option value="${esc(o)}" ${o===v?'selected':''}>${esc(o)}</option>`).join('');
+    return `<select id="${id}"><option value="">Seleccione…</option>${opts}</select>`;
+  }
+  if(f.type==='date') return `<input type="date" id="${id}" value="${esc(v)}">`;
+  if(f.type==='number') return `<input type="number" id="${id}" value="${esc(v)}" min="${f.min??0}" step="${f.step??'any'}" inputmode="decimal" placeholder="${esc(f.placeholder??'')}">`;
+  return `<input type="text" id="${id}" value="${esc(v)}" placeholder="${esc(f.placeholder??'')}">`;
+}
+
+function renderAddForm(tableKey){
+  const t = TABLES[tableKey];
+  const fieldsHtml = t.fields.map(f=>`
+    <div class="field ${f.required?'required':''}">
+      <label>${esc(f.label)}</label>
+      ${fieldInput(tableKey, f, '')}
+    </div>`).join('');
+  return `
+  <div class="card">
+    <div class="form-grid">${fieldsHtml}</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveRow('${tableKey}')">＋ Agregar registro</button>
+      <span class="form-msg" id="msg_${tableKey}"></span>
+    </div>
+  </div>`;
+}
+
+function renderRowsTable(tableKey){
+  const t = TABLES[tableKey];
+  const rows = state[tableKey] || [];
+  const cols = [...t.fields, ...(t.computed||[])];
+  const head = cols.map(c=>`<th>${esc(c.label)}</th>`).join('') + '<th></th>';
+  let bodyHtml;
+  if(rows.length===0){
+    bodyHtml = `<tr class="empty-row"><td colspan="${cols.length+1}">Aún no hay registros. Agregue el primero arriba ↑</td></tr>`;
+  }else{
+    bodyHtml = rows.map((r,idx)=>{
+      const tds = cols.map(c=>{
+        if(c.fn){
+          const val = c.fn(r);
+          return `<td data-label="${esc(c.label)}">${c.raw ? esc(val) : fmt(val)}</td>`;
+        }
+        const f = t.fields.find(x=>x.key===c.key);
+        let val = r[c.key];
+        if(f && f.type==='number') val = fmt(val);
+        return `<td data-label="${esc(c.label)}">${esc(val??'')}</td>`;
+      }).join('');
+      return `<tr data-card-title="Registro ${idx+1}">${tds}<td data-label="" class="action-cell"><button class="del-btn" onclick="deleteRow('${tableKey}','${r.id}')" title="Eliminar">✕ Eliminar</button></td></tr>`;
+    }).join('');
+  }
+  let footHtml = '';
+  if((t.totals && t.totals.length) || (t.totalsComputed && t.totalsComputed.length)){
+    const tds = cols.map((c,i)=>{
+      const isTotalCol = (t.totals && t.totals.includes(c.key)) || (t.totalsComputed && t.totalsComputed.includes(c.key));
+      if(i===0 && !isTotalCol) return `<td data-label="" class="total-label-cell" style="text-align:right">TOTAL →</td>`;
+      if(!isTotalCol) return `<td data-label="${esc(c.label)}"></td>`;
+      if(c.fn){
+        if(t.avgComputed && t.avgComputed.includes(c.key)){
+          const s = rows.reduce((acc,r)=>acc+num(c.fn(r)),0);
+          const avg = rows.length? s/rows.length : 0;
+          return `<td data-label="${esc(c.label)}">Σ ${fmt(s)} · prom ${fmt(avg,1)}</td>`;
+        }
+        const s = rows.reduce((acc,r)=>acc+num(c.fn(r)),0);
+        return `<td data-label="${esc(c.label)}">${fmt(s)}</td>`;
+      }
+      const s = rows.reduce((acc,r)=>acc+num(r[c.key]),0);
+      return `<td data-label="${esc(c.label)}">${fmt(s)}</td>`;
+    }).join('');
+    footHtml = `<tfoot><tr data-card-title="TOTAL">${tds}<td data-label=""></td></tr></tfoot>`;
+  }
+  return `<div class="table-wrap"><table class="responsive-table"><thead><tr>${head}</tr></thead><tbody>${bodyHtml}</tbody>${footHtml}</table></div>`;
+}
+
+function renderDynamicBlock(tableKey, title){
+  return `${title? `<h3 class="sub-title">${esc(title)}</h3>`:''}${renderAddForm(tableKey)}${renderRowsTable(tableKey)}`;
+}
+
+async function saveRow(tableKey){
+  const t = TABLES[tableKey];
+  const msg = document.getElementById(`msg_${tableKey}`);
+  msg.textContent='';
+  const row = {id:uid()};
+  for(const f of t.fields){
+    const el = document.getElementById(`inp_${tableKey}_${f.key}`);
+    let v = el.value;
+    if(f.required && !v){
+      msg.textContent = `Complete el campo "${f.label}".`;
+      el.focus();
+      return;
+    }
+    row[f.key]=v;
+  }
+  state[tableKey] = state[tableKey]||[];
+  state[tableKey].push(row);
+  await storageSet(keyFor(tableKey), state[tableKey]);
+  renderActiveSection();
+}
+async function deleteRow(tableKey, id){
+  if(!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
+  state[tableKey] = (state[tableKey]||[]).filter(r=>r.id!==id);
+  await storageSet(keyFor(tableKey), state[tableKey]);
+  renderActiveSection();
+}
+
+/* ============================================================
+   SECCIONES (TABS)
+============================================================ */
+const SECTIONS = [
+  {key:'resumen', label:'📋 Resumen'},
+  {key:'lotes', label:'🗺️ Lotes'},
+  {key:'vivero', label:'🌱 Vivero'},
+  {key:'suelo', label:'🚜 Prep. Suelo'},
+  {key:'trasplante', label:'🌾 Trasplante/Resiembra'},
+  {key:'fert', label:'🧪 Fertilización'},
+  {key:'fito', label:'🐛 Fitosanitario'},
+  {key:'riego', label:'💧 Riego'},
+  {key:'actividades', label:'📅 Actividades'},
+  {key:'cosecha', label:'🍂 Cosecha'},
+  {key:'comparar', label:'📊 Comparar lotes'},
+  {key:'backup', label:'⚙️ Respaldo'},
+];
+let activeTab = 'resumen';
+const NEEDS_LOTE = ['vivero','suelo','trasplante','fert','fito','riego','actividades','cosecha'];
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = SECTIONS.map(s=>
+    `<button class="tab-btn ${s.key===activeTab?'active':''}" onclick="switchTab('${s.key}')">${s.label}</button>`
+  ).join('');
+}
+async function switchTab(key){
+  activeTab = key;
+  renderTabs();
+  await renderActiveSection();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+async function renderActiveSection(){
+  const main = document.getElementById('main');
+  if(NEEDS_LOTE.includes(activeTab) && !state.activeLoteId){
+    main.innerHTML = `<div class="section active" id="sec">
+      <div class="warn-box">
+        <b>Primero cree o seleccione un lote.</b><br>
+        Todos los registros de campo se guardan dentro de un lote, para poder compararlos después.
+      </div>
+      <button class="btn btn-primary" onclick="switchTab('lotes')">🗺️ Ir a Lotes</button>
+    </div>`;
+    return;
+  }
+  if(activeTab==='comparar'){
+    main.innerHTML = `<div class="section active" id="sec">Cargando comparación…</div>`;
+    const html = await buildComparacion();
+    document.getElementById('sec').innerHTML = html;
+    return;
+  }
+  main.innerHTML = `<div class="section active" id="sec">${buildSection(activeTab)}</div>`;
+}
+
+function buildSection(key){
+  switch(key){
+    case 'resumen': return buildResumen();
+    case 'lotes': return buildLotes();
+    case 'vivero': return buildVivero();
+    case 'suelo': return `
+      <div class="intro">Un suelo bien mullido, sin terrones grandes y con buen drenaje es la base del cultivo: el tabaco es muy sensible al encharcamiento.</div>
+      ${renderDynamicBlock('suelo')}`;
+    case 'trasplante': return buildTrasplante();
+    case 'fert': return `
+      <div class="intro">Elija si el producto es <b>Sólido</b> o <b>Líquido</b>: la dosis se interpreta en kg/ha o L/ha según corresponda. Indique el agua de mezcla para ver la concentración resultante. La <b>Dosis Total</b> usa la superficie del lote activo.</div>
+      ${renderDynamicBlock('fert')}`;
+    case 'fito': return buildFito();
+    case 'riego': return `
+      <div class="intro">Mida cada 5 días el agua filtrada en 3 puntos de la línea central del módulo: inicio, medio y final. El total se suma solo.</div>
+      ${renderDynamicBlock('riego')}`;
+    case 'actividades': return buildActividades();
+    case 'cosecha': return buildCosecha();
+    case 'backup': return buildBackup();
+    default: return '';
+  }
+}
+
+function sumField(tableKey, field){
+  return (state[tableKey]||[]).reduce((a,r)=>a+num(r[field]),0);
+}
+function laborJornalesActivo(){
+  const eq = k => (state[k]||[]).reduce((a,r)=>a+num(r.canguro)+num(r.bombaManual)+num(r.bombaMotorizada)+num(r.personal),0);
+  return sumField('suelo','personal') + eq('fert') + eq('fitoAsp') + eq('fitoDre')
+       + sumField('cronograma','jornales') + sumField('actExtra','jornales')
+       + sumField('cosida','jornales') + sumField('peso','jornales');
+}
+function costoInsumosActivo(){
+  return sumField('fert','costoInsumo') + sumField('fitoAsp','costoInsumo') + sumField('fitoDre','costoInsumo')
+       + sumField('fitoInv','costoInsumo') + sumField('vivExtra','costoInsumo')
+       + sumField('nutriAlt','costoInsumo') + sumField('nutriSem','costoInsumo')
+       + sumField('suelo','costoOperacion');
+}
+
+function buildResumen(){
+  const lote = activeLote();
+  if(!lote){
+    return `
+    <div class="warn-box"><b>No hay ningún lote creado todavía.</b><br>Cree su primer lote para empezar a registrar datos.</div>
+    <button class="btn btn-primary" onclick="switchTab('lotes')">🗺️ Crear mi primer lote</button>`;
+  }
+  const totalPlantas = sumField('trasplante','totalPlantas');
+  const totalResiembra = (state.resiembra||[]).reduce((a,r)=>a+num(r.sem1)+num(r.sem2)+num(r.sem3)+num(r.sem4),0);
+  const totalCujesCosida = sumField('cosida','cujes');
+  const totalLibras = sumField('peso','libras');
+  const superficie = activeSuperficie();
+  const rendHa = superficie>0 ? totalLibras/superficie : 0;
+  const jornales = laborJornalesActivo();
+  const costoMO = jornales * num(state.meta.costoJornal);
+  const costoIns = costoInsumosActivo();
+  const costoTotal = costoMO + costoIns;
+  const costoHa = superficie>0 ? costoTotal/superficie : 0;
+  const totalPlagas = (state.erradicacion||[]).reduce((a,r)=>a+['fitotoxicidad','canela','marchitamiento','erwinia','mosaico','virus','llama','lagarta','nematodos','otro'].reduce((s,k)=>s+num(r[k]),0),0);
+
+  return `
+  <div class="intro">Lote activo: <b>${esc(lote.nombre)}</b> (${esc(lote.variedad)||'sin variedad'} · ${fmt(lote.superficie)} ha). Cambie de lote arriba para ver otro, o use <b>📊 Comparar lotes</b> para verlos todos juntos.</div>
+  <div class="btn-row" style="margin-bottom:16px;">
+    <button class="btn btn-primary" onclick="exportToExcel()">📊 Descargar todo en Excel (.xlsx)</button>
+  </div>
+  <div class="summary-grid">
+    <div class="stat-card"><div class="num">${fmt(totalPlantas)}</div><div class="lbl">Plantas trasplantadas</div></div>
+    <div class="stat-card"><div class="num">${fmt(totalResiembra)}</div><div class="lbl">Plantas resembradas</div></div>
+    <div class="stat-card"><div class="num">${fmt(totalCujesCosida)}</div><div class="lbl">Cujes cosidos</div></div>
+    <div class="stat-card"><div class="num">${fmt(totalLibras)}</div><div class="lbl">Libras pesadas</div></div>
+    <div class="stat-card"><div class="num">${fmt(rendHa,1)}</div><div class="lbl">Libras / ha</div></div>
+    <div class="stat-card"><div class="num">${fmt(totalPlagas)}</div><div class="lbl">Plantas con plaga/enfermedad</div></div>
+    <div class="stat-card cost"><div class="num">${money(costoIns)}</div><div class="lbl">Costo insumos</div></div>
+    <div class="stat-card cost"><div class="num">${money(costoMO)}</div><div class="lbl">Costo mano de obra (${fmt(jornales)} jornales)</div></div>
+    <div class="stat-card cost"><div class="num">${money(costoTotal)}</div><div class="lbl">Costo total</div></div>
+    <div class="stat-card cost"><div class="num">${money(costoHa)}</div><div class="lbl">Costo por hectárea</div></div>
+  </div>
+  <h2 class="block-title">Cómo usar este registro</h2>
+  <div class="card" style="font-size:.86rem; line-height:1.6;">
+    1. Cree sus lotes en <b>🗺️ Lotes</b> (nombre, variedad, hectáreas).<br>
+    2. Elija el <b>lote activo</b> en el selector de arriba — todo lo que registre se guarda ahí.<br>
+    3. Entre a la pestaña de la labor y presione <b>＋ Agregar registro</b>: fechas con calendario, listas para elegir, totales y costos automáticos.<br>
+    4. Use <b>📊 Comparar lotes</b> para ver rendimiento y costos lado a lado.<br>
+    5. Use <b>⚙️ Respaldo</b> de vez en cuando para descargar una copia de seguridad o el libro de Excel.
+  </div>`;
+}
+
+function buildLotes(){
+  const lotes = state.lotes||[];
+  const rows = lotes.map(l=>`
+    <div class="lote-card ${l.id===state.activeLoteId?'active':''}">
+      <div class="info">
+        <b>${esc(l.nombre)}</b>${l.id===state.activeLoteId?'<span class="badge-active">ACTIVO</span>':''}
+        <div class="meta">${esc(l.variedad)||'Sin variedad'} · ${fmt(l.superficie)} ha ${l.fechaSiembra? '· Siembra: '+esc(l.fechaSiembra):''}</div>
+      </div>
+      <div class="lote-actions">
+        ${l.id!==state.activeLoteId? `<button class="btn btn-primary" onclick="switchLote('${l.id}')">Activar</button>`:''}
+        <button class="btn btn-ghost" onclick="deleteLote('${l.id}')">🗑 Eliminar</button>
+      </div>
+    </div>`).join('') || `<p style="color:var(--muted); font-style:italic;">Aún no hay lotes creados.</p>`;
+  return `
+  <div class="intro">Cada lote tiene sus propios registros (vivero, suelo, fertilización, cosecha…). Cree uno por cada lote o variedad que quiera comparar.</div>
+  <h2 class="block-title">Lotes existentes</h2>
+  ${rows}
+  <h2 class="block-title">Crear nuevo lote</h2>
+  <div class="card">
+    <div class="form-grid">
+      <div class="field required"><label>Nombre del lote</label><input id="lote_nombre" placeholder="Ej. Lote 3"></div>
+      <div class="field"><label>Variedad</label><input id="lote_variedad" placeholder="Ej. Connecticut"></div>
+      <div class="field required"><label>Superficie (ha)</label><input id="lote_superficie" type="number" min="0" step="0.01" placeholder="0.00"></div>
+      <div class="field"><label>Fecha de siembra/trasplante</label><input id="lote_fecha" type="date"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitNuevoLote()">＋ Crear lote</button>
+      <span class="form-msg" id="msg_lote"></span>
+    </div>
+  </div>`;
+}
+async function submitNuevoLote(){
+  const nombre = document.getElementById('lote_nombre').value.trim();
+  const variedad = document.getElementById('lote_variedad').value.trim();
+  const superficie = document.getElementById('lote_superficie').value;
+  const fecha = document.getElementById('lote_fecha').value;
+  const msg = document.getElementById('msg_lote');
+  if(!nombre){ msg.textContent='Ponga un nombre al lote.'; return; }
+  if(!superficie){ msg.textContent='Indique la superficie en hectáreas.'; return; }
+  await addLote(nombre, variedad, superficie, fecha);
+  renderLoteSelect();
+  switchTab('lotes');
+}
+
+async function computeLoteStats(lote){
+  const get = (k)=>storageGet(keyForLote(k, lote.id), []);
+  const [suelo, trasplante, resiembra, erradicacion, fert, fitoAsp, fitoDre, fitoInv,
+         cronograma, actExtra, cosida, peso, vivExtra, nutriAlt, nutriSem] = await Promise.all(
+    ['suelo','trasplante','resiembra','erradicacion','fert','fitoAsp','fitoDre','fitoInv',
+     'cronograma','actExtra','cosida','peso','vivExtra','nutriAlt','nutriSem'].map(get)
+  );
+  const sum = (arr,k)=> (arr||[]).reduce((a,r)=>a+num(r[k]),0);
+  const eqJornales = (arr)=> (arr||[]).reduce((a,r)=>a+num(r.canguro)+num(r.bombaManual)+num(r.bombaMotorizada)+num(r.personal),0);
+  const jornales = sum(suelo,'personal') + eqJornales(fert) + eqJornales(fitoAsp) + eqJornales(fitoDre)
+                  + sum(cronograma,'jornales') + sum(actExtra,'jornales') + sum(cosida,'jornales') + sum(peso,'jornales');
+  const costoIns = sum(fert,'costoInsumo')+sum(fitoAsp,'costoInsumo')+sum(fitoDre,'costoInsumo')+sum(fitoInv,'costoInsumo')
+                  + sum(vivExtra,'costoInsumo')+sum(nutriAlt,'costoInsumo')+sum(nutriSem,'costoInsumo')+sum(suelo,'costoOperacion');
+  const costoMO = jornales * num(state.meta.costoJornal);
+  const costoTotal = costoIns + costoMO;
+  const libras = sum(peso,'libras');
+  const superficie = num(lote.superficie);
+  const plagas = (erradicacion||[]).reduce((a,r)=>a+['fitotoxicidad','canela','marchitamiento','erwinia','mosaico','virus','llama','lagarta','nematodos','otro'].reduce((s,k)=>s+num(r[k]),0),0);
+  const numAplicaciones = (fert||[]).length + (fitoAsp||[]).length + (fitoDre||[]).length;
+  return {
+    lote, superficie,
+    plantas: sum(trasplante,'totalPlantas'),
+    resiembra: (resiembra||[]).reduce((a,r)=>a+num(r.sem1)+num(r.sem2)+num(r.sem3)+num(r.sem4),0),
+    libras, rendHa: superficie>0? libras/superficie : 0,
+    costoIns, costoMO, costoTotal, costoHa: superficie>0? costoTotal/superficie : 0,
+    plagas, numAplicaciones, jornales,
+  };
+}
+async function buildComparacion(){
+  const lotes = state.lotes||[];
+  if(lotes.length===0){
+    return `<div class="warn-box">Cree al menos un lote para poder comparar.</div>
+    <button class="btn btn-primary" onclick="switchTab('lotes')">🗺️ Ir a Lotes</button>`;
+  }
+  const stats = await Promise.all(lotes.map(computeLoteStats));
+  const rows = stats.map(s=>`
+    <tr data-card-title="${esc(s.lote.nombre)}">
+      <td data-label="Lote">${esc(s.lote.nombre)}${s.lote.id===state.activeLoteId?' ⭐':''}</td>
+      <td data-label="Variedad">${esc(s.lote.variedad)||'—'}</td>
+      <td data-label="Ha">${fmt(s.superficie)}</td>
+      <td data-label="Plantas">${fmt(s.plantas)}</td>
+      <td data-label="Libras">${fmt(s.libras)}</td>
+      <td data-label="Libras/ha">${fmt(s.rendHa,1)}</td>
+      <td data-label="Plagas (total)">${fmt(s.plagas)}</td>
+      <td data-label="N° aplicaciones">${fmt(s.numAplicaciones)}</td>
+      <td data-label="Costo insumos">${money(s.costoIns)}</td>
+      <td data-label="Costo mano obra">${money(s.costoMO)}</td>
+      <td data-label="Costo total">${money(s.costoTotal)}</td>
+      <td data-label="Costo / ha">${money(s.costoHa)}</td>
+    </tr>`).join('');
+  return `
+  <div class="intro">Comparación entre todos los lotes registrados. ⭐ = lote activo. Estas cifras se recalculan solas a partir de lo que registró en cada lote.</div>
+  <div class="table-wrap"><table class="responsive-table">
+    <thead><tr><th>Lote</th><th>Variedad</th><th>Ha</th><th>Plantas</th><th>Libras</th><th>Libras/ha</th><th>Plagas (total)</th><th>N° aplicaciones</th><th>Costo insumos</th><th>Costo mano obra</th><th>Costo total</th><th>Costo/ha</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>
+  <div class="intro" style="margin-top:16px;">💡 Para relacionar tratamientos con resultados: revise en cada lote las pestañas Fitosanitario (productos y fechas aplicadas) y Trasplante/Resiembra (plagas detectadas) — compare contra el rendimiento y costo de este cuadro.</div>`;
+}
+
+function buildVivero(){
+  const vivHeaders = ["Día (DDS)","Producto","Ingrediente","Dosis","Forma","Vol. Calda","Fecha real","Cant. prod. (mL)","Cant. calda (L)","Observaciones"];
+  const rows = VIVERO_RECOM.map((rec,i)=>{
+    const reg = state.vivRegistro[i]||{};
+    return `<tr data-card-title="Aplicación ${i+1} — DDS ${esc(rec.dds)}">
+      <td class="ref" data-label="${vivHeaders[0]}">${esc(rec.dds)}</td>
+      <td class="ref" data-label="${vivHeaders[1]}">${esc(rec.producto)}</td>
+      <td class="ref" data-label="${vivHeaders[2]}">${esc(rec.ingrediente)}</td>
+      <td class="ref" data-label="${vivHeaders[3]}">${esc(rec.dosis)}</td>
+      <td class="ref" data-label="${vivHeaders[4]}">${esc(rec.forma)}</td>
+      <td class="ref" data-label="${vivHeaders[5]}">${esc(rec.vol)}</td>
+      <td data-label="${vivHeaders[6]}"><input type="date" value="${esc(reg.fechaReal)}" onchange="updateVivReg(${i},'fechaReal',this.value)"></td>
+      <td data-label="${vivHeaders[7]}"><input type="number" min="0" inputmode="decimal" value="${esc(reg.cantProd)}" onchange="updateVivReg(${i},'cantProd',this.value)"></td>
+      <td data-label="${vivHeaders[8]}"><input type="number" min="0" inputmode="decimal" value="${esc(reg.cantCalda)}" onchange="updateVivReg(${i},'cantCalda',this.value)"></td>
+      <td data-label="${vivHeaders[9]}"><input type="text" value="${esc(reg.obs)}" onchange="updateVivReg(${i},'obs',this.value)"></td>
+    </tr>`;
+  }).join('');
+  const poda = [1,2,3,4].map(n=>{
+    const p = state.vivPoda[n]||{};
+    return `<tr data-card-title="${n}ª poda">
+      <td class="ref" data-label="Poda">${n}ª poda</td>
+      <td data-label="Fecha real"><input type="date" value="${esc(p.fecha)}" onchange="updatePoda(${n},'fecha',this.value)"></td>
+      <td data-label="Observaciones"><input type="text" value="${esc(p.obs)}" onchange="updatePoda(${n},'obs',this.value)" placeholder="Observaciones"></td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="intro">Etapa de producción de plántulas en bandejas. Las columnas con fondo dorado son la <b>recomendación</b> fija del programa; las columnas blancas son lo que usted registra.</div>
+
+  <h2 class="block-title">1. Control fitosanitario — aplicaciones programadas</h2>
+  <div class="table-wrap checklist-table"><table class="responsive-table">
+    <thead><tr>${vivHeaders.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>
+
+  ${renderDynamicBlock('vivExtra','Aplicaciones extra (no programadas)')}
+
+  <h2 class="block-title">2. Registro de poda</h2>
+  <div class="intro" style="margin-bottom:10px;">Recomendado: 1ª a los 30-32 DDS · 2ª a los 37 DDS · 3ª y 4ª antes del trasplante.</div>
+  <div class="table-wrap checklist-table"><table class="responsive-table">
+    <thead><tr><th>Poda</th><th>Fecha real</th><th>Observaciones</th></tr></thead>
+    <tbody>${poda}</tbody>
+  </table></div>
+  <div class="card" style="margin-top:12px;">
+    <div class="field"><label>Fecha de eliminación de plántulas remanentes</label>
+    <input type="date" value="${esc(state.vivElim)}" onchange="updateElim(this.value)"></div>
+  </div>
+
+  <h2 class="block-title">3. Programa de nutrición</h2>
+  ${renderDynamicBlock('nutriAlt','Registro — aplicación en días alternos')}
+  ${renderDynamicBlock('nutriSem','Registro — aplicación semanal (Sulfato de Magnesio)')}
+  `;
+}
+async function updateVivReg(i, field, val){
+  state.vivRegistro[i][field]=val;
+  await storageSet(keyFor('vivRegistro'), state.vivRegistro);
+}
+async function updatePoda(n, field, val){
+  state.vivPoda[n][field]=val;
+  await storageSet(keyFor('vivPoda'), state.vivPoda);
+}
+async function updateElim(val){
+  state.vivElim = val;
+  await storageSet(keyFor('vivElim'), val);
+}
+
+function buildTrasplante(){
+  return `
+  <div class="intro">Trasplantar preferiblemente en horas de baja radiación y aplicar riego de prendimiento inmediato. Revisar el lote a los 5-7 días para resembrar.</div>
+  <h2 class="block-title">1. Trasplante</h2>
+  ${renderDynamicBlock('trasplante')}
+  <h2 class="block-title">2. Resiembra — N° de plantas por causa</h2>
+  ${renderDynamicBlock('resiembra')}
+  <h2 class="block-title">3. Erradicación de plantas enfermas</h2>
+  ${renderDynamicBlock('erradicacion')}
+  `;
+}
+
+function buildFito(){
+  return `
+  <div class="intro">Igual que en Fertilización: elija <b>Tipo</b> (Sólido/Líquido), la dosis/ha, y el agua de mezcla para ver la concentración resultante automáticamente.</div>
+  <h2 class="block-title">1. Aplicación por aspersión</h2>
+  ${renderDynamicBlock('fitoAsp')}
+  <h2 class="block-title">2. Aplicación en "Drench"</h2>
+  ${renderDynamicBlock('fitoDre')}
+  <h2 class="block-title">3. Productos emergenciales en inventario</h2>
+  <div class="intro">Mantener en inventario mínimo para un lote de 10-12 ha, para uso oportuno contra insectos chupadores (áfidos, pulgones, trips).</div>
+  ${renderDynamicBlock('fitoInv')}
+  `;
+}
+
+function buildActividades(){
+  return `
+  <h2 class="block-title">1. Cronograma de actividades</h2>
+  <div class="intro">Los <b>días transcurridos</b> se calculan solos a partir de la fecha programada y la fecha real de ejecución.</div>
+  ${renderDynamicBlock('cronograma')}
+  <h2 class="block-title">2. Actividades extras</h2>
+  ${renderDynamicBlock('actExtra')}
+  `;
+}
+
+function buildCosecha(){
+  return `
+  <div class="intro">Cosechar después de que se seque el rocío; evitar cosechar con hoja mojada. Usar manga larga e impermeable en condiciones húmedas (riesgo de Green Tobacco Sickness).</div>
+  <h2 class="block-title">1. Cosida (ensartado en cujes)</h2>
+  ${renderDynamicBlock('cosida')}
+  <h2 class="block-title">2. Peso</h2>
+  ${renderDynamicBlock('peso')}
+  <h2 class="block-title">3. Pases de cosecha</h2>
+  ${renderDynamicBlock('pases')}
+  `;
+}
+
+let installPromptEvent = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPromptEvent = e;
+  if(activeTab==='backup') renderActiveSection();
+});
+async function installApp(){
+  if(!installPromptEvent) return;
+  installPromptEvent.prompt();
+  await installPromptEvent.userChoice;
+  installPromptEvent = null;
+  renderActiveSection();
+}
+
+function buildBackup(){
+  return `
+  ${installPromptEvent ? `
+  <div class="card" style="border:2px solid var(--green);">
+    <h3 class="sub-title" style="margin-top:0;">📱 Instalar como app</h3>
+    <p style="font-size:.85rem; margin-bottom:10px;">Su navegador permite instalar esta app en el celular: quedará con ícono propio y abrirá a pantalla completa.</p>
+    <button class="btn btn-primary" onclick="installApp()">📱 Instalar esta app en mi celular</button>
+  </div>` : ''}
+  <div class="intro">Descargue una copia de seguridad de todos sus datos (todos los lotes) en un archivo. Guárdela en su correo o nube.</div>
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0;">Exportar a Excel</h3>
+    <div class="backup-row">
+      <button class="btn btn-primary" onclick="exportToExcel()">📊 Descargar lote activo en Excel (.xlsx)</button>
+    </div>
+    <p style="font-size:.78rem; color:var(--muted); margin-top:10px;">Genera un libro de Excel con una hoja por cada sección del lote activo.</p>
+  </div>
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0;">Copia de seguridad completa (formato técnico .json)</h3>
+    <div class="backup-row">
+      <button class="btn btn-primary" onclick="downloadBackup()">⬇ Descargar copia (.json)</button>
+      <label class="label-file">⬆ Importar copia
+        <input type="file" id="importFile" accept=".json" onchange="importBackup(event)">
+      </label>
+    </div>
+    <p style="font-size:.78rem; color:var(--muted); margin-top:10px;">Esta copia incluye TODOS los lotes. Importar una copia reemplaza todos los datos actuales en este dispositivo.</p>
+  </div>
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0; color:var(--red);">Borrar todo</h3>
+    <button class="btn btn-danger" onclick="resetAll()">🗑 Borrar todos los lotes y registros</button>
+  </div>`;
+}
+
+function sheetRows(tableKey){
+  const t = TABLES[tableKey];
+  const rows = state[tableKey]||[];
+  const cols = [...t.fields, ...(t.computed||[])];
+  const header = cols.map(c=>c.label);
+  const data = rows.map(r=> cols.map(c=> c.fn? (c.raw? c.fn(r) : roundVal(c.fn(r))) : (r[c.key]??'') ));
+  if(data.length===0) data.push(cols.map(()=>''));
+  return [header, ...data];
+}
+function roundVal(v){
+  if(typeof v === 'number') return Math.round(v*100)/100;
+  return v;
+}
+function addSheet(wb, name, rows2d){
+  const safeName = name.substring(0,31);
+  const ws = XLSX.utils.aoa_to_sheet(rows2d);
+  const maxCols = rows2d.reduce((m,r)=>Math.max(m,r.length),1);
+  ws['!cols'] = Array.from({length:maxCols},()=>({wch:18}));
+  XLSX.utils.book_append_sheet(wb, ws, safeName);
+}
+
+function exportToExcel(){
+  if(typeof XLSX === 'undefined'){
+    alert('No se pudo cargar el módulo de Excel (se necesita conexión a internet la primera vez). Intente de nuevo, o use "Descargar copia (.json)" como respaldo mientras tanto.');
+    return;
+  }
+  const lote = activeLote();
+  if(!lote){ alert('Seleccione o cree un lote primero.'); return; }
+  try{
+    const wb = XLSX.utils.book_new();
+    addSheet(wb, 'Portada', [
+      ['CUADERNO DE CAMPO — REGISTRO DE DATOS DE TABACO'],
+      ['Cosecha 2026'],
+      [],
+      ['Hacienda / Empresa', state.meta.hacienda||''],
+      ['Lote', lote.nombre||''],
+      ['Variedad', lote.variedad||''],
+      ['Superficie (ha)', lote.superficie||''],
+      ['Técnico responsable', state.meta.tecnico||''],
+      ['Costo de jornal ($)', state.meta.costoJornal||''],
+      [],
+      ['Generado el', new Date().toLocaleString('es-EC')],
+    ]);
+
+    let vivRows = [['1. CONTROL FITOSANITARIO — APLICACIONES PROGRAMADAS'],
+      ['Día (DDS)','Producto','Ingrediente Activo','Dosis','Forma de Aplicación','Vol. Calda','Fecha Real','Cant. Producto (mL)','Cant. Calda (L)','Observaciones']];
+    VIVERO_RECOM.forEach((rec,i)=>{
+      const reg = state.vivRegistro[i]||{};
+      vivRows.push([rec.dds,rec.producto,rec.ingrediente,rec.dosis,rec.forma,rec.vol,reg.fechaReal||'',reg.cantProd||'',reg.cantCalda||'',reg.obs||'']);
+    });
+    vivRows.push([],['APLICACIONES EXTRA']); vivRows = vivRows.concat(sheetRows('vivExtra'));
+    vivRows.push([],['REGISTRO DE PODA'],['Poda','Fecha real','Observaciones']);
+    [1,2,3,4].forEach(n=>{ const p = state.vivPoda[n]||{}; vivRows.push([n+'ª', p.fecha||'', p.obs||'']); });
+    vivRows.push([],['Fecha de eliminación de plántulas remanentes', state.vivElim||'']);
+    vivRows.push([],['NUTRICIÓN — APLICACIÓN EN DÍAS ALTERNOS']); vivRows = vivRows.concat(sheetRows('nutriAlt'));
+    vivRows.push([],['NUTRICIÓN — APLICACIÓN SEMANAL']); vivRows = vivRows.concat(sheetRows('nutriSem'));
+    addSheet(wb, 'Vivero', vivRows);
+
+    addSheet(wb, 'Prep. Suelo', sheetRows('suelo'));
+
+    let trRows = [['1. TRASPLANTE']]; trRows = trRows.concat(sheetRows('trasplante'));
+    trRows.push([],['2. RESIEMBRA — N° DE PLANTAS POR CAUSA']); trRows = trRows.concat(sheetRows('resiembra'));
+    trRows.push([],['3. ERRADICACIÓN DE PLANTAS ENFERMAS']); trRows = trRows.concat(sheetRows('erradicacion'));
+    addSheet(wb, 'Trasplante-Resiembra', trRows);
+
+    addSheet(wb, 'Fertilización Campo', sheetRows('fert'));
+
+    let fitoRows = [['1. APLICACIÓN POR ASPERSIÓN']]; fitoRows = fitoRows.concat(sheetRows('fitoAsp'));
+    fitoRows.push([],['2. APLICACIÓN EN DRENCH']); fitoRows = fitoRows.concat(sheetRows('fitoDre'));
+    fitoRows.push([],['3. PRODUCTOS EMERGENCIALES EN INVENTARIO']); fitoRows = fitoRows.concat(sheetRows('fitoInv'));
+    addSheet(wb, 'Fitosanitario Campo', fitoRows);
+
+    addSheet(wb, 'Riego', sheetRows('riego'));
+
+    let actRows = [['1. CRONOGRAMA DE ACTIVIDADES']]; actRows = actRows.concat(sheetRows('cronograma'));
+    actRows.push([],['2. ACTIVIDADES EXTRAS']); actRows = actRows.concat(sheetRows('actExtra'));
+    addSheet(wb, 'Actividades Campo', actRows);
+
+    let cosRows = [['1. COSIDA']]; cosRows = cosRows.concat(sheetRows('cosida'));
+    cosRows.push([],['2. PESO']); cosRows = cosRows.concat(sheetRows('peso'));
+    cosRows.push([],['3. PASES DE COSECHA']); cosRows = cosRows.concat(sheetRows('pases'));
+    addSheet(wb, 'Cosecha', cosRows);
+
+    const stamp = new Date().toISOString().slice(0,10);
+    const safeLote = (lote.nombre||'lote').replace(/[^a-z0-9]+/gi,'_');
+    XLSX.writeFile(wb, `Datos_Tabaco_${safeLote}_${stamp}.xlsx`);
+    flashStatus('Excel descargado ✓', true);
+  }catch(e){
+    console.error(e);
+    alert('Ocurrió un problema generando el Excel. Intente de nuevo; si persiste, use la copia de seguridad (.json).');
+  }
+}
+
+function downloadBackup(){
+  try{
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url; a.download = `respaldo_tabaco_${stamp}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }catch(e){
+    alert('No se pudo descargar automáticamente. Copie este texto y guárdelo en un archivo .json:\\n\\n'+JSON.stringify(state));
+  }
+}
+function importBackup(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!confirm('Esto reemplazará todos los datos actuales (todos los lotes). ¿Continuar?')) return;
+      await persistGlobal(data.meta||state.meta, data.lotes||[], data.activeLoteId||'');
+      state = Object.assign({}, defaultState(), data);
+      for(const k of LOTE_KEYS){
+        await storageSet(keyFor(k), state[k]);
+      }
+      renderLoteSelect();
+      fillMetaInputs();
+      renderActiveSection();
+      flashStatus('Copia importada ✓', true);
+    }catch(err){
+      console.error(err);
+      alert('El archivo no es válido.');
+    }
+  };
+  reader.readAsText(file);
+}
+async function persistGlobal(meta, lotes, activeLoteId){
+  await storageSet('meta', meta);
+  await storageSet('lotes', lotes);
+  await storageSet('activeLoteId', activeLoteId);
+}
+async function resetAll(){
+  if(!confirm('¿Borrar TODOS los lotes y registros? Esta acción no se puede deshacer.')) return;
+  if(!confirm('Confirme nuevamente: se perderán todos los datos guardados en este dispositivo.')) return;
+  const meta = state.meta;
+  state = defaultState();
+  state.meta = meta;
+  await persistGlobal(state.meta, [], '');
+  renderLoteSelect();
+  switchTab('resumen');
+}
+
+/* ============================================================
+   META (datos generales globales)
+============================================================ */
+function fillMetaInputs(){
+  document.getElementById('meta_hacienda').value = state.meta.hacienda||'';
+  document.getElementById('meta_tecnico').value = state.meta.tecnico||'';
+  document.getElementById('meta_costoJornal').value = state.meta.costoJornal||'';
+  updateMetaSummary();
+}
+function updateMetaSummary(){
+  const m = state.meta;
+  const lote = activeLote();
+  const parts = [];
+  if(m.hacienda) parts.push(m.hacienda);
+  if(lote) parts.push('Lote: '+lote.nombre);
+  if(m.costoJornal) parts.push('Jornal: '+money(m.costoJornal));
+  const el = document.getElementById('metaSummary');
+  el.textContent = parts.length ? 'Cosecha 2026 — ' + parts.join(' · ') : 'Cosecha 2026 — toque "Datos generales" para completar';
+}
+function toggleMeta(){
+  const bar = document.getElementById('metaBar');
+  const btn = document.getElementById('metaToggleBtn');
+  const isCollapsed = bar.classList.contains('collapsed');
+  bar.classList.toggle('collapsed');
+  btn.textContent = isCollapsed ? '▴ Cerrar' : '▾ Datos generales';
+}
+function bindMetaInputs(){
+  ['hacienda','tecnico','costoJornal'].forEach(k=>{
+    document.getElementById('meta_'+k).addEventListener('change', async (e)=>{
+      state.meta[k]=e.target.value;
+      await storageSet('meta', state.meta);
+      updateMetaSummary();
+      if(k==='costoJornal' && (activeTab==='resumen'||activeTab==='fert'||activeTab==='fito')) renderActiveSection();
+    });
+  });
+}
+
+/* ============================================================
+   CARGA / GUARDADO POR LOTE Y GLOBAL
+============================================================ */
+async function loadActiveLoteData(){
+  if(!state.activeLoteId){
+    const def = defaultState();
+    LOTE_KEYS.forEach(k=>{ state[k]=def[k]; });
+    return;
+  }
+  for(const key of LOTE_KEYS){
+    const fallback = defaultState()[key];
+    state[key] = await storageGet(keyFor(key), fallback);
+  }
+}
+async function loadGlobal(){
+  state.meta = await storageGet('meta', state.meta);
+  state.lotes = await storageGet('lotes', []);
+  state.activeLoteId = await storageGet('activeLoteId', '');
+  if(state.activeLoteId && !state.lotes.find(l=>l.id===state.activeLoteId)){
+    state.activeLoteId = state.lotes.length? state.lotes[0].id : '';
+  }
+  if(!state.activeLoteId && state.lotes.length){
+    state.activeLoteId = state.lotes[0].id;
+  }
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+async function init(){
+  flashStatus('Cargando…', false);
+  await loadGlobal();
+  await loadActiveLoteData();
+  fillMetaInputs();
+  bindMetaInputs();
+  renderLoteSelect();
+  renderTabs();
+  await renderActiveSection();
+  flashStatus('listo', false);
+}
+init();
+
+/* Registro del service worker (PWA): permite instalar la app y usarla sin
+   internet. Si la página se abre directo desde un archivo (file://) el
+   navegador no permite Service Workers por seguridad — la app sigue
+   funcionando igual, solo que sin el modo "instalar como app". */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch((err) => {
+      console.warn('No se pudo registrar el service worker:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
+
+
+
+
+
